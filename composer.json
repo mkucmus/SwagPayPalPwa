@@ -1,0 +1,26 @@
+{
+  "name": "swag/paypal-pwa",
+  "description": "PWA extension for PayPal - Shopware 6 plugin",
+  "type": "shopware-platform-plugin",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Divante Ltd."
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Swag\\PayPalPwa\\": "src/"
+    }
+  },
+  "require": {
+    "swag/paypal": "1.3.0"
+  },
+  "extra": {
+    "shopware-plugin-class": "Swag\\PayPalPwa\\SwagPayPalPwa",
+    "label": {
+      "de-DE": "PWA extension for PayPal plugin",
+      "en-GB": "PWA extension for PayPal plugin"
+    }
+  }
+}
