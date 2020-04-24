@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @RouteScope(scopes={"sales-channel-api"})
- * @Route("/sales-channel-api/v{version}/pwa/plugin")
+ * @Route("/sales-channel-api/v{version}/pwa/plugin/paypal")
  */
 class PwaController extends AbstractController
 {
@@ -33,7 +33,7 @@ class PwaController extends AbstractController
     }
 
     /**
-     * @Route("/paypal/client-id", name="sales-channel-api.paypal.pwa", methods={"POST"})
+     * @Route("/client-id", name="sales-channel-api.paypal.pwa", methods={"POST"})
      * @param SalesChannelContext $context
      * @return JsonResponse
      * @throws \Swag\PayPal\Setting\Exception\PayPalSettingsInvalidException
@@ -50,7 +50,7 @@ class PwaController extends AbstractController
     }
 
     /**
-     * @Route("/paypal/create-order", name="sales-channel-api.pwa.plugin.paypal.spb.create-order", methods={"POST"})
+     * @Route("/create-order", name="sales-channel-api.pwa.plugin.paypal.spb.create-order", methods={"POST"})
      * @param Request $request
      * @return JsonResponse
      */
