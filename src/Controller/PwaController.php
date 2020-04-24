@@ -33,6 +33,9 @@ class PwaController extends AbstractController
     }
 
     /**
+     * Adds endpoint to get PayPal client ID which can vary depending on sales channel.
+     * It's used by the PayPal SDK script loader in Vue component.
+     *
      * @Route("/client-id", name="sales-channel-api.paypal.pwa", methods={"POST"})
      * @param SalesChannelContext $context
      * @return JsonResponse
@@ -50,6 +53,12 @@ class PwaController extends AbstractController
     }
 
     /**
+     * Forward request to the SPBCheckoutController::createPayment action.
+     * This action is created only for creating the additional route to be reachable from shopware-6-client
+     * (pluginGet, pluginPost) which are prefixed with "/sales-channel-api/v{version}/pwa/plugin"
+     *
+     * It's used by Smart Buttons to initiate the transaction. Returns token.
+     *
      * @Route("/create-order", name="sales-channel-api.pwa.plugin.paypal.spb.create-order", methods={"POST"})
      * @param Request $request
      * @return JsonResponse
@@ -62,5 +71,34 @@ class PwaController extends AbstractController
                 $request,
             ]
         );
+    }
+
+    /**
+     * Since the shopware-pwa won't be keeping the secrets after successful PayPal transaction
+     * It should be kept on SW6 side, for instance in some context-related place.
+     * The payerID and paymentID will be used during the placing an order just like storefront does at:
+     * 1) /confirm page as query - /checkout/confirm?paypalPayerId=FECPL9K3F8NXS&paypalPaymentId=PAYID-L2RPOEQ80B17849187953048)
+     * 2) then it's used on /checkout/order as a payload {
+     *   isPayPalSpbCheckout: 1
+     *   paypalPaymentId: PAYID-L2RPOEQ80B17849187953048
+     *   paypalPayerId: FECPL9K3F8NXS
+     * }
+     * 3) and the last time at /checkout/finalize-transaction as query
+     *  paymentId: PAYID-L2RPOEQ80B17849187953048
+     *  PayerID: FECPL9K3F8NXS
+     * isPayPalSpbCheckout: 1
+     *
+     * We need to keep it stick to the current context with possibility to change those values (in case of cart changes)
+     * To avoid passing extra parameters in shopware-6-client / checkout / order services.
+     *
+     * @param Request $request
+     * @param SalesChannelContext $context
+     * @return JsonResponse
+     */
+    public function onApprove(Request $request, SalesChannelContext $context): JsonResponse
+    {
+        // @TODO: store the payerID and paymentID
+        // if so, be aware that's the paypal payment-related checkout
+        // adjust listeners/subscribers to be aware of it for sales-channel entrypoint.
     }
 }
